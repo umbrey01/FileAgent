@@ -5,7 +5,6 @@ class PathViolation(Exception):
 
 def _safe(root: Path, p: str) -> Path:
     target = (root / p).resolve()
-    # 确保目标路径必须在 root 里面，防止 ../ 越界
     if not target.is_relative_to(root.resolve()):
         raise PathViolation(f"越界: {p}")
     return target
@@ -20,7 +19,7 @@ def list_files(root: Path, subdir: str = ".") -> list[dict]:
         if "$recycle.bin" in str(f).lower() or "system volume information" in str(f).lower():
             continue
 
-        if f.is_file() and not f.name.startswith("."):  # 顺便过滤掉 Mac 的 .DS_Store 等
+        if f.is_file() and not f.name.startswith("."):
             rel_path = f.relative_to(root)
             files.append({
                 "name": str(rel_path).replace("\\", "/"),

@@ -16,8 +16,7 @@ def get_models(api_key: str, base_url: str) -> list[str]:
     except Exception as e:
         print(f"获取模型列表失败: {e}")
         return []
-# 1. 定义你的通用工具箱（用 JSON Schema 描述）
-# 只要在这里加工具，大模型自己就会学怎么用，不需要改下面的代码！
+# 1. 定义通用工具箱（用 JSON Schema 描述）
 TOOLS = [
     {
         "type": "function",
@@ -68,7 +67,7 @@ def generate_plan(root: Path, instruction: str, api_key: str, base_url: str, mod
     task_id = str(uuid.uuid4())[:8]
     log_action(task_id, "Agent启动", "开始", f"指令: {instruction}")
 
-    # 这次，Prompt 里我们只规定最终输出格式，不再规定思考动作
+    # Prompt 里只规定最终输出格式，不再规定思考动作
     system_prompt = """
     你是一个强大的文件整理助手。你可以调用提供的工具来调查目录里的文件内容。
     当调查清楚后，你不需要再调用工具，直接输出最终的整理方案。
@@ -85,11 +84,11 @@ def generate_plan(root: Path, instruction: str, api_key: str, base_url: str, mod
 
     max_steps = 5
     for step in range(max_steps):
-        # 调用 API 时，把工具箱（TOOLS）一并传进去！
+        # 调用 API 时，把工具箱（TOOLS）一并传进
         response = client.chat.completions.create(
             model=model_name,
             messages=messages,
-            tools=TOOLS,  # 关键点：大模型会自动决定要不要用工具
+            tools=TOOLS,  # 自动决定要不要用工具
             temperature=0.1
         )
 
@@ -121,7 +120,7 @@ def generate_plan(root: Path, instruction: str, api_key: str, base_url: str, mod
             self_log = f"调用工具 {function_name}, 参数: {arguments}"
             log_action(task_id, "思考与行动", "进行中", self_log)
 
-            # 我们的代码替大模型执行工具
+            # 代码替大模型执行工具
             observation = execute_tool(function_name, arguments, root)
 
             log_action(task_id, "工具返回", "完成", f"结果: {observation[:50]}...")

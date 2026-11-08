@@ -17,7 +17,7 @@ class FileAgentApp:
         self.current_dir = None
         self.current_plan = []
 
-        # ================= 1. 先把底部的日志框建出来 =================
+
         log_frame = tk.Frame(root)
         log_frame.pack(side="bottom", fill="x", padx=10, pady=5)
         tk.Label(log_frame, text="运行日志:").pack(anchor="w")
@@ -29,7 +29,7 @@ class FileAgentApp:
         bottom_frame.pack(side="bottom", fill="x", padx=10)
         tk.Button(bottom_frame, text="批准并执行", bg="lightgreen", command=self.execute_plan).pack(side="left")
 
-        # ================= 2. 加载配置与 API 面板 =================
+
         self.config_file = "config.json"
         self.config = self.load_config()
 
@@ -53,12 +53,12 @@ class FileAgentApp:
         tk.Button(api_frame, text="刷新模型列表", command=self.refresh_models).grid(row=1, column=2, columnspan=2,
                                                                                     pady=2)
 
-        # 现在这里有 log_text 了，可以放心调用自动拉取
+
         if self.config.get("api_key") and self.config.get("base_url"):
             self.refresh_models()
             self.model_combo.set(self.config.get("model_name", ""))
 
-        # ================= 3. 顶部选择目录与指令 =================
+
         top_frame = tk.Frame(root, pady=10)
         top_frame.pack(fill="x", padx=10)
         tk.Button(top_frame, text="选择要整理的文件夹", command=self.select_dir).pack(side="left")
@@ -73,7 +73,7 @@ class FileAgentApp:
         self.instruction_entry.pack(side="left", padx=5)
         tk.Button(mid_frame, text="生成方案", command=self.make_plan).pack(side="left", padx=10)
 
-        # ================= 4. 中间的表格 =================
+
         self.tree = ttk.Treeview(root, columns=("src", "dst", "action", "reason"), show="headings")
         self.tree.heading("src", text="源文件")
         self.tree.heading("dst", text="目标路径")
@@ -146,12 +146,12 @@ class FileAgentApp:
         success_count = 0
         for item in self.current_plan:
             if item["action"] == "move" and item.get("status") == "ok":
-                # =============== 关键防御：执行前二次确认文件存在 ===============
+
                 src_path = self.current_dir / item["src"]
                 if not src_path.exists():
                     self.log(f"⚠️ 跳过 {item['src']}：文件已被手动删除或移动")
                     continue
-                # ==================================================================
+
 
                 try:
                     execute_move(self.current_dir, item["src"], item["dst"])
@@ -196,9 +196,9 @@ class FileAgentApp:
         models = get_models(key, url)
         if models:
             self.model_combo["values"] = models
-            # 如果当前没有选择，默认选第一个
+
             if not self.model_combo.get() and models:
-                # 优先选 deepseek-chat 或 gpt-3.5-turbo 之类的常用模型
+
                 default_model = models[0]
                 for m in models:
                     if "deepseek-chat" in m or "gpt-4o-mini" in m or "gpt-3.5" in m:

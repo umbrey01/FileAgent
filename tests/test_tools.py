@@ -14,4 +14,4 @@ def test_execute_move(tmp_path):
     (tmp_path / "a.txt").write_text("x")
     execute_move(tmp_path, "a.txt", "sub/a.txt")
     assert (tmp_path / "sub/a.txt").exists()
-    assert not (tmp_path / "a.txt").exists()
+    assert not (tmp_path / "a.txt").exists()git add .

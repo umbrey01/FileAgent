@@ -4,7 +4,7 @@ from datetime import datetime
 DB_NAME = "agent.db"
 
 def init_db():
-    """初始化数据库，建一张表用来存日志"""
+    """初始化数据库，建一张表存日志"""
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute("""
@@ -21,7 +21,7 @@ def init_db():
     conn.close()
 
 def log_action(task_id: str, action: str, status: str, detail: str):
-    """把一条动作记录写进黑匣子"""
+    """把一条动作记录写进"""
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
